@@ -12,7 +12,7 @@
 
 ---
 
-## 1. Overview {#1-overview}
+## 1. Overview
 This project implements a role-based company management and performance review system using **Django + Django REST Framework**.  
 
 It provides:  
@@ -24,7 +24,7 @@ It provides:
 
 ---
 
-## 2. Project Setup ⚙️ {#2-project-setup-}
+## 2. Project Setup ⚙️
 
 ### Installation
 
@@ -78,7 +78,7 @@ It provides:
 
 ---
 
-## 3. Implementation Details {#3-implementation-details}
+## 3. Implementation Details
 
 ### 🔹 Accounts App  
 - Custom user model (`UserAccount`) with four roles: **Admin**, **HR**, **Manager**, **Employee** and Sign in Using email not username.
@@ -117,7 +117,7 @@ It provides:
 
 ---
 
-## 4. Assumptions & Considerations {#4-assumptions--considerations}
+## 4. Assumptions & Considerations
 - Employees are treated as a **manageable entity** (model `Employee`) rather than being tied directly to `UserAccount` via foreign key.  
 - A `PerformanceReview` model was introduced (not explicitly in requirements) to manage workflow and state transitions.  
 - **HR role clarified**: HR schedules and provides feedback, while Managers handle approvals/rejections.  
@@ -127,14 +127,14 @@ It provides:
 
 ---
 
-## 5. Security Measures {#5-security-measures}
+## 5. Security Measures
 - **JWT authentication**: all endpoints protected by token-based auth.  
 - **Role-Based Access Control (RBAC)**: enforced through custom permission classes.  
 - Sensitive actions (creating employees, assigning reviews, approving/rejecting) are strictly tied to roles.  
 
 ---
 
-## 6. API Endpoints {#6-api-endpoints}
+## 6. API Endpoints
 
 ### 🔹 Accounts
 | Method | Endpoint | Description | Roles Allowed | Notes |
