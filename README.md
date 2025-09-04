@@ -1,19 +1,18 @@
-
 # Company Management & Performance Review System  
 
 ## 📑 Table of Contents  
-1. Overview  
-2. Project Setup  
-3. Implementation Details  
-4. Assumptions & Considerations  
-5. Security Measures  
-6. API Endpoints  
-7. Task Completion Checklist  
+1. [Overview](#1-overview)  
+2. [Project Setup](#2-project-setup-)  
+3. [Implementation Details](#3-implementation-details)  
+4. [Assumptions & Considerations](#4-assumptions--considerations)  
+5. [Security Measures](#5-security-measures)  
+6. [API Endpoints](#6-api-endpoints)  
+7. [Task Completion Checklist](#7-task-completion-checklist-)  
   
 
 ---
 
-## 1. Overview  
+## 1. Overview {#1-overview}
 This project implements a role-based company management and performance review system using **Django + Django REST Framework**.  
 
 It provides:  
@@ -25,17 +24,75 @@ It provides:
 
 ---
 
-## 2. Project Setup ⚙️  
-  
+## 2. Project Setup ⚙️ {#2-project-setup-}
+
+### Installation
+
+1. **Make sure you have Python 3.10+ installed**
+
+2. **Create an empty folder, within it create a Python virtual environment:**
+
+   ```bash
+   python -m venv django-env
+   ```
+
+3. **Clone this repository to your local machine:**
+
+   ```bash
+   git clone https://github.com/Mohamed-Senary/Brainwise-Task.git
+   cd Brainwise-Task
+   ```
+
+4. **Activate the Python virtual environment:**
+
+   ```bash
+   # Windows
+   ../django-env/Scripts/Activate
+   
+   # Linux/macOS
+   source ../django-env/bin/activate
+   ```
+
+5. **Install the necessary requirements:**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+6. **Make migrations and migrate the database:**
+
+   ```bash
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
+
+7. **Run the application server locally:**
+
+   ```bash
+   python manage.py runserver
+   ```
+
+8. **Follow the link in the terminal** (usually `http://127.0.0.1:8000/`)
+
+9. **Check the API documentation** for the different endpoints
 
 ---
 
-## 3. Implementation Details  
+## 3. Implementation Details {#3-implementation-details}
 
 ### 🔹 Accounts App  
-- Custom user model (`UserAccount`) with four roles: **Admin**, **HR**, **Manager**, **Employee**.  
+- Custom user model (`UserAccount`) with four roles: **Admin**, **HR**, **Manager**, **Employee** and Sign in Using email not username.
+- Encode role in JWT token
+- Registeration and SignIn functionalities  
 - Provides the base authentication and role definitions.  
-- Role-based permissions (`IsAdmin`, `IsHR`, `IsManager`, `IsEmployee`) implemented here.  
+- Role-based permissions (`IsAdmin`, `IsHR`, `IsManager`, `IsEmployee`) implemented here.
+#### Permissions Matrix:
+| Entity / Action | Admin | Manager | HR | Employee |
+|---|---|---|---|---|
+| View Company | ✅ | ✅ |  | ❌ |
+| View Dept | ✅ |  | ✅ | ❌ |
+| Employee (CRUD) | ✅ Full | View Only | ✅ Full | ❌ |
+| Performance Review | ❌ | Approve / Reject only | Create, Schedule, Provide Feedback, Push for Approval | View own review, Accept |  
 
 ### 🔹 Company App  
 - Responsible for managing **companies, departments, and employees**.  
@@ -56,10 +113,11 @@ It provides:
   - `FEEDBACK_PROVIDED → UNDER_APPROVAL` (HR pushes forward)  
   - `UNDER_APPROVAL → APPROVED/REJECTED` (Manager decides)  
  
+ ![transition state diagram of system](assets/RevieStateDiag.drawio.png)
 
 ---
 
-## 4. Assumptions & Considerations  
+## 4. Assumptions & Considerations {#4-assumptions--considerations}
 - Employees are treated as a **manageable entity** (model `Employee`) rather than being tied directly to `UserAccount` via foreign key.  
 - A `PerformanceReview` model was introduced (not explicitly in requirements) to manage workflow and state transitions.  
 - **HR role clarified**: HR schedules and provides feedback, while Managers handle approvals/rejections.  
@@ -69,14 +127,21 @@ It provides:
 
 ---
 
-## 5. Security Measures  
+## 5. Security Measures {#5-security-measures}
 - **JWT authentication**: all endpoints protected by token-based auth.  
 - **Role-Based Access Control (RBAC)**: enforced through custom permission classes.  
 - Sensitive actions (creating employees, assigning reviews, approving/rejecting) are strictly tied to roles.  
 
 ---
 
-## 6. API Endpoints  
+## 6. API Endpoints {#6-api-endpoints}
+
+### 🔹 Accounts
+| Method | Endpoint | Description | Roles Allowed | Notes |
+|--------|----------|-------------|---------------|-------|
+| POST | `/api/accounts/register/` | Register User| AllowAny | |
+| POST | `/api/accounts/login/` | Obtain JWT token pair|AllowAny | |
+| POST | `/api/token/refresh/` |Obtain new JWT refresh token|IsAuthenicated | |
 
 ### 🔹 Company & Employee Management  
 | Method | Endpoint | Description | Roles Allowed | Notes |
@@ -105,14 +170,14 @@ It provides:
 
 ---
 
-## 7. Task Completion Checklist ✅  
+## 7. Task Completion Checklist ✅ {#7-task-completion-checklist-}
 - [x] Implement role-based authentication and permissions.  
 - [x] Manage companies, departments, and employees.  
 - [x] Implement performance review model and lifecycle.  
 - [x] Enforce role-based access control on all endpoints.  
 - [x] Secure endpoints using JWT authentication.  
-- [x] Write unit tests for permissions and review workflow.  
-- [ ] Add project setup instructions.  
-- [ ] Insert state diagram for review workflow.  
-
+- [x] Write unit tests for authentication, permissions, company/dept/empoyee CRUD and review workflow.  
+- [] Integration Tests (PARTIAL)
+- []  Project CRUD (BONUS)
+- []  Logging (BONUS)
 ---

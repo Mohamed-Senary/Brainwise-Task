@@ -21,9 +21,7 @@ class UserAccountSerializer(serializers.ModelSerializer):
         )
         return user
 
-#Adding the role of each user in the response with the token
-#reduces queries on db to get role of user
-#will ease permissions later
+
 class CustomTokenObtainPairSerializer (TokenObtainPairSerializer):
     @classmethod
     def get_token (cls, user):
