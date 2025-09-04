@@ -170,14 +170,15 @@ It provides:
 
 ---
 
-## 7. Task Completion Checklist ✅ {#7-task-completion-checklist-}
-- [x] Implement role-based authentication and permissions.  
-- [x] Manage companies, departments, and employees.  
-- [x] Implement performance review model and lifecycle.  
-- [x] Enforce role-based access control on all endpoints.  
-- [x] Secure endpoints using JWT authentication.  
-- [x] Write unit tests for authentication, permissions, company/dept/empoyee CRUD and review workflow.  
-- [] Integration Tests (PARTIAL)
-- []  Project CRUD (BONUS)
-- []  Logging (BONUS)
+## 7. Task Completion Checklist ✅
+
+- [x] Implement role-based authentication and permissions
+- [x] Manage companies, departments, and employees
+- [x] Implement performance review model and lifecycle
+- [x] Enforce role-based access control on all endpoints
+- [x] Secure endpoints using JWT authentication
+- [x] Write unit tests for authentication, permissions, company/dept/employee CRUD and review workflow
+- [ ] Integration Tests (PARTIAL)
+- [ ] Project CRUD (BONUS)
+- [ ] Logging (BONUS)
 ---
