@@ -46,9 +46,9 @@ class DepartmentSerializer(serializers.ModelSerializer):
         return data
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    # Include computed field as read-only
-    days_employed = serializers.ReadOnlyField()
     
+    days_employed = serializers.ReadOnlyField()
+
     class Meta:
         model = Employee
         fields = [
@@ -63,25 +63,37 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'hired_on',
             'days_employed'
         ]
-    
+
+    def validate(self, attrs):
+        """
+        Ensure the employee's department belongs to the selected company.
+        Department can be null.
+        """
+        #First try the company coming from the request payload (attrs).
+        #If the client didn’t provide one (like in a PATCH), use the company that already exists on the employee (self.instance).
+        #If neither is available (like a brand new object with no company), then company will just be None.
+        company = attrs.get("company") or getattr(self.instance, "company", None)
+        department = attrs.get("department") or getattr(self.instance, "department", None)
+
+        #IF there is a company and department (both not None)
+        #Make sure that the dept's company (using inverse relationship), is the same as the company itself
+        if company and department and department.company != company:
+            raise serializers.ValidationError({
+                "department": "Employee department must belong to the same company."
+            })
+        return attrs
+
     def to_representation(self, instance):
-        """
-        Override to include company and department names in response
-        """
         data = super().to_representation(instance)
-        
-        # Add company name
+        #Add company name
         if instance.company:
             data['company_name'] = instance.company.name
-        
-        # Add department name
+        #Add dept name
         if instance.department:
             data['department_name'] = instance.department.name
         else:
             data['department_name'] = None
-            
         return data
-
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:

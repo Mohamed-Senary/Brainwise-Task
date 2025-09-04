@@ -1,7 +1,13 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny #FOR TESTING PURPOSES
+#from rest_framework.permissions import AllowAny #FOR TESTING PURPOSES
+from accounts.api.permissions import (
+    IsAdmin,
+    IsEmployee,
+    IsHR,
+    IsManager
+)
 from company.models import (
     Company,
     Department,
@@ -18,14 +24,14 @@ from company.api.serializers import (
 #COMPANY ENDPOINTS
 #LATER: Add Permissions
 @api_view(['GET'])
-@permission_classes([AllowAny]) #FOR TESTING PURPOSES
+@permission_classes([IsAdmin | IsManager | IsHR])
 def list_companies (request):
     companies = Company.objects.all()
     serialized_companies = CompanySerializer (instance=companies , many=True)
     return Response(serialized_companies.data , status=status.HTTP_200_OK)
 
 @api_view(['GET'])
-@permission_classes([AllowAny]) #FOR TESTING PURPOSES
+@permission_classes([IsAdmin | IsManager | IsHR])
 def company_details (request, id):
     try:
         company = Company.objects.get(pk=id)
@@ -38,7 +44,7 @@ def company_details (request, id):
 #DEPARTMENT ENDPOINTS
 #LATER: Add Permissions
 @api_view(['GET'])
-@permission_classes([AllowAny]) #FOR TESTING PURPOSES
+@permission_classes([IsAdmin | IsManager | IsHR])
 def list_departments(request):
     # Get the company query parameter
     company_id = request.query_params.get('company') 
@@ -55,7 +61,7 @@ def list_departments(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
-@permission_classes([AllowAny]) #FOR TESTING PURPOSES
+@permission_classes([IsAdmin | IsManager | IsHR])
 def department_details(request, id):
     try:
         department = Department.objects.get(pk=id)
@@ -68,7 +74,7 @@ def department_details(request, id):
 #EMPLOYEE ENDPOINTS
 #LATER: Add Permissions 
 @api_view(['GET', 'POST'])
-@permission_classes([AllowAny]) #FOR TESTING PURPOSES
+@permission_classes([IsAdmin | IsManager | IsHR])
 def list_employees (request):
     if request.method == 'GET':
         employees = Employee.objects.all()
@@ -87,6 +93,8 @@ def list_employees (request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     elif request.method == 'POST':
+        if not (request.user.is_hr or request.user.is_admin):
+            return Response({"detail": "Only HR or Admin can create employees."}, status=status.HTTP_403_FORBIDDEN)
         employee = EmployeeSerializer (data=request.data)
         employee.is_valid(raise_exception=True)
         employee.save()
@@ -94,7 +102,7 @@ def list_employees (request):
 
 
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
-@permission_classes([AllowAny]) #FOR TESTING PURPOSES
+@permission_classes([IsAdmin | IsManager | IsHR])
 def employee_by_id(request, id):
     try:
         employee = Employee.objects.get(pk=id)
@@ -117,5 +125,3 @@ def employee_by_id(request, id):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-#LATER: COULD ADD PROJECT CRUD (BONUS)

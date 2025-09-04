@@ -115,18 +115,6 @@ class Employee(models.Model):
             return None
         return (timezone.now().date() - self.hired_on).days
 
-    # def clean(self):
-    #     """
-    #     Custom validation for Employee model.
-    #     """
-    #     super().clean()
-        
-    #     # Ensure employee's department belongs to the same company
-    #     if self.department and self.company and self.department.company != self.company:
-    #         raise ValidationError({
-    #             'department': 'Employee department must belong to the same company.'
-    #         })
-
 class Project(models.Model):
     company = models.ForeignKey(
         Company,
